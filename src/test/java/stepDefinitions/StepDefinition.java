@@ -25,7 +25,6 @@ public class StepDefinition {
 	private static WebDriver driver;
 	public String text;
 	String url = "http://apps.qa2qe.cognizant.e-box.co.in/CustomerRegistration/Index"; 
-	//"http://apps.qa2qe.cognizant.e-box.co.in/CustomerRegistration/Index";
 	
 	@Given("^I access Customer Registration using firefox$")
 	public void setUp() throws Throwable {
