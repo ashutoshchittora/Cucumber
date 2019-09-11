@@ -1,4 +1,4 @@
-package stepDefinitions;
+/*package stepDefinitions;
 
 import static org.junit.Assert.assertTrue;
 
@@ -128,3 +128,4 @@ public class FeeStepDefinition{
 		
 
 
+*/

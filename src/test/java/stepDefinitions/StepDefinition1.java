@@ -6,11 +6,13 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -21,187 +23,104 @@ import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import org.openqa.selenium.chrome.*;
 
-public class StepDefinition1{
-	
-	String text = "";	
+public class StepDefinition1 {
+
+	String text = "";
 	String result = "";
 	String expectedResult = "";
 
 	public WebDriver driver;
-		
-    
-    	
+
 	@Given("^I open the Shipment page$")
 	public void i_open_the_Shipment1_page() throws Throwable {
 		Path root = FileSystems.getDefault().getPath("").toAbsolutePath();
-		Path filePath = Paths.get(root.toString(),"src", "test", "resources","config", "geckodriver1.exe");		
-		
-		System.setProperty("webdriver.gecko.driver", filePath.toUri().toString().substring(8));
-		System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE,"true");
-        System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE,System.getProperty("user.dir") + "\\garbageDelete\\MarionetteLOGS.txt");
-
-		
-		driver = new FirefoxDriver();
+//		Path filePath = Paths.get(root.toString(), "src", "test", "resources", "config", "geckodriver1.exe");		
+		//System.setProperty("webdriver.gecko.driver", filePath.toUri().toString().substring(8));
+		//System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true");
+		//System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE,	System.getProperty("user.dir") + "\\garbageDelete\\MarionetteLOGS.txt");
+		//driver = new FirefoxDriver();
+		Path filePath = Paths.get(root.toString(), "src", "test", "resources", "config", "chromedriver276.exe");	
+		System.setProperty("webdriver.chrome.driver", filePath.toUri().toString().substring(8));
+		driver = new ChromeDriver();
 		driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
-		driver.manage().window().maximize();		
+		driver.manage().window().maximize();
 		driver.get("http://apps.qa2qe.cognizant.e-box.co.in/CucumberShipmentPagination/");
-		
+
 	}
 
 	@When("^I click the First page$")
 	public void i_click_the_page() throws Throwable {
-	 
+
 		driver.findElement(By.xpath("/html/body/div/span[1]/a")).click();
-		
+
 	}
 
 	@Then("^I can see the table of First page with data in it$")
 	public void i_can_see_the_table_with_data_in_it(DataTable dt) throws Throwable {
-		
-		assertTrue(driver.findElement(By.xpath("/html/body/table"))!= null);
-			
+
+		assertTrue(driver.findElement(By.xpath("/html/body/table")) != null);
+
 		WebElement table = driver.findElement(By.xpath("/html/body/table/tbody"));
 		List<WebElement> rows = table.findElements(By.tagName("tr"));
-	    List<WebElement> column = table.findElements(By.tagName("td"));
-	    List<List<String>> value = new ArrayList<List<String>>();
-	    
-	    
-	    for(WebElement element: rows) {
-	    	List <String> arrayList = new ArrayList<String>();
-	    	List<WebElement> tdList = element.findElements(By.tagName("td"));
-	    	for(WebElement elementTd  : tdList ) {
-	    		
-	    	}
-	    	
-	    }
+		List<WebElement> column = table.findElements(By.tagName("td"));
+		List<Map<String, String>> webTableValue = new ArrayList<Map<String, String>>();
 
-        for (int j=0; j<column.size(); j++){
-        	List <String> arrayList = new ArrayList<String>();
-            System.out.println(column.get(j).getText());
-            arrayList.add(column.get(j).getText());
-            value.add(arrayList);
-        }
-        	
-		
+		for (WebElement element : rows) {
+			Map<String, String> map = new HashMap();
+
+			if (element.findElements(By.tagName("td")).size() > 0) {
+
+				List<WebElement> tdList = element.findElements(By.tagName("td"));
+				int counter = 0;
+				for (WebElement elementTd : tdList) {
+
+					switch (counter) {
+					case 0:
+						map.put("Name", elementTd.getText());
+						counter++;
+						break;
+
+					case 1:
+						map.put("Status", elementTd.getText());
+						counter++;
+						break;
+
+					case 2:
+						map.put("Weight", elementTd.getText());
+						counter++;
+						break;
+
+					case 3:
+						map.put("Arrival Port", elementTd.getText());
+						counter++;
+						break;
+
+					case 4:
+						map.put("Depature Port", elementTd.getText());
+						counter++;
+						break;
+
+					}
+
+				}
+				webTableValue.add(map);
+			}
+
+		}
+
 		List<Map<String, String>> list = dt.asMaps(String.class, String.class);
-		for(int i=0; i<list.size(); i++) {
-			System.out.println(list.get(i).get("Name"));
-			System.out.println(list.get(i).get("Status"));
-			System.out.println(list.get(i).get("Weight"));
-			System.out.println(list.get(i).get("Arrival Port"));
-			System.out.println(list.get(i).get("Depature Port"));				
-			
-		}		
-		
-		driver.quit(); 
-	 
-	}
-
-	
-	
-	
-	
-	
-	
-	
-	/*@Given("^I am able to access Fees Calculation index page$")
-	public void i_am_able_to_access_Fees_Calculation_index_page() throws Throwable {
-		
-		
-		Path root = FileSystems.getDefault().getPath("").toAbsolutePath();
-		Path filePath = Paths.get(root.toString(),"src", "test", "resources","config", "geckodriver1.exe");		
-		
-		System.setProperty("webdriver.gecko.driver", filePath.toUri().toString().substring(8));
-		System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE,"true");
-        System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE,System.getProperty("user.dir") + "\\garbageDelete\\MarionetteLOGS.txt");
-
-		
-		driver = new FirefoxDriver();
-		driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
-		driver.manage().window().maximize();		
-		driver.get("http://apps.qa2qe.cognizant.e-box.co.in/CucumberShipmentPagination/");
-		
-	}
-
-	private boolean isElementPresent(By by) {
-	    try {
-	      driver.findElement(by);
-	      return true;
-	    } catch (NoSuchElementException e) {
-	      return false;
-	    }
-	  }
-
-	@When("^Verify the all form fields with name as \"([^\"]*)\", \"([^\"]*)\", \"([^\"]*)\" and button with id as \"([^\"]*)\"$")
-	public void verify_the_all_form_fields_with_name_as_name_type_number_and_button_with_id_as_getFee_and_Submit(String name,String type, String number, String getFee ) throws Throwable {
-		
-		try {
-			
-			assertTrue(isElementPresent(By.name(name)));
-			assertTrue(isElementPresent(By.name(type)));
-			assertTrue(isElementPresent(By.name(number)));
-			assertTrue(isElementPresent(By.id(getFee)));
-	    } catch (Exception e) {
-		    System.out.println("Element not found");
+		for (int i = 0; i < list.size(); i++) {
+			assertThat(list.get(i).entrySet(), equalTo(webTableValue.get(i).entrySet()));
+			assertThat(list.get(i), is(webTableValue.get(i)));
 		}
 
-	}
-	
-	@When("I submit (.*) and (.*) details$")
-	public void i_submit_Hosteller_and_details(String studentType, String studentsPerRoom) throws Throwable {
-	    // Write code here that turns the phrase above into concrete actions
-		
-		driver.findElement(By.name("name")).sendKeys("testName");;
-		List <WebElement>  oRadioButtonType = driver.findElements(By.name("type"));
-		if (studentType.equalsIgnoreCase("Hosteller"))
-		{
-			oRadioButtonType.get(0).click();
-			driver.findElement(By.name("number")).sendKeys(studentsPerRoom);
-		}
-		else
-			oRadioButtonType.get(1).click();
-		driver.findElement(By.id("getFee")).click();
-	 
-	}
-	
-	
-	@Then("^Verify the fee (.*), (.*), (.*), (.*) and (.*) based on the provided data$")
-	public void verify_the_fee_and_based_on_the_provided_data(String studentType, String collegeFee, String hostelFee, String additionalFee,String totalFee) throws Throwable {
-	   String  getCollegeFee = driver.findElement(By.xpath("//*[@id='feeTable']/tbody/tr[1]/td[2]")).getText();
-	   String  getHostelFee = driver.findElement(By.xpath("//*[@id='feeTable']/tbody/tr[2]/td[2]")).getText();
-	   String  getAdditionalFee = driver.findElement(By.xpath("//*[@id='feeTable']/tbody/tr[3]/td[2]")).getText();
-	   String  getTotalFee = driver.findElement(By.xpath("//*[@id='feeTable']/tbody/tr[4]/td[2]")).getText();
-	  
-	   if (studentType.equalsIgnoreCase("Hosteller"))
-		{
-		   assertTrue(getCollegeFee.contains(collegeFee));
-		   assertTrue(getHostelFee.contains(hostelFee));
-		   if(additionalFee.contains(getAdditionalFee));
-		   assertTrue(true);
-		   assertTrue(getTotalFee.contains(totalFee));
-		}
-	   else
-	   {
-		   assertTrue(getCollegeFee.contains(collegeFee));
-		   assertTrue(getTotalFee.contains(totalFee));
-	   }
-		   
-	   
+		driver.quit();
 	}
 
-    
-	@After public void tearDown(){ 
-	      driver.quit(); 
-	 }*/
-
-   }
-	
-
-	
-
-	
-
-		
-
-
+}
