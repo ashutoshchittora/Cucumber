@@ -12,8 +12,9 @@ import cucumber.api.junit.Cucumber;
  */// html:target/cucumber", "json:target/cucumber-report.json
 
 @CucumberOptions(
-		features = "src/test/resources/features/Shipment1.feature", 
-		glue = {"stepDefinitions" }, 
+		features = "src/test/resources/features", 
+		tags = {"@Shipment1,@Shipment2,@Shipment3,@Shipment4,@Shipment5"},
+		glue = {"stepDefinitions" },		
 		monochrome = false, 
 		plugin = { "pretty", "json:target/cucumber-reports/Cucumber.json",
 				"junit:target/cucumber-reports/Cucumber.xml", "html:target/cucumber-reports" },

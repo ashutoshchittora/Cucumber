@@ -3,7 +3,7 @@ Feature: Shipment1 page
 
   @Shipment1
   Scenario: Validate Shipment1 page
-    Given I open the Shipment page
+    Given I open the Shipment1 page
     When I click the First page
     Then I can see the table of First page with data in it
       | Name              | Status  | Weight  | Arrival Port | Depature Port |

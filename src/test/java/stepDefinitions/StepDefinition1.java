@@ -37,7 +37,7 @@ public class StepDefinition1 {
 
 	public WebDriver driver;
 
-	@Given("^I open the Shipment page$")
+	@Given("^I open the Shipment1 page$")
 	public void i_open_the_Shipment1_page() throws Throwable {
 		Path root = FileSystems.getDefault().getPath("").toAbsolutePath();
 //		Path filePath = Paths.get(root.toString(), "src", "test", "resources", "config", "geckodriver1.exe");		
